@@ -4,13 +4,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.courses.model.Topic
 import com.example.courses.ui.theme.CoursesTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,10 +32,51 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CoursesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+
+            }
+        }
+    }
+}
+
+@Composable
+fun TopicCard(topic: Topic, modifier: Modifier = Modifier){
+    Card(modifier = modifier) {
+        Row {
+            Image(
+                painter = painterResource(topic.imageResourceId),
+                contentDescription = stringResource(topic.nameResourceId),
+                modifier = Modifier
+                    .height(68.dp)
+                    .width(68.dp),
+                contentScale = ContentScale.Fit
+            )
+            Column(
+                Modifier.padding(
+                    PaddingValues(
+                        start = 16.dp,
+                        top = 16.dp,
+                        end = 16.dp,
+                        bottom = 0.dp
+                    )
+                )
+            ) {
+                Text(
+                    text = stringResource(topic.nameResourceId),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Row(
+                    Modifier.padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_grain),
+                        contentDescription = "decorative icon",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "${topic.numberAssociatedCourse}",
+                        modifier = Modifier.padding(start = 8.dp),
+                        style = MaterialTheme.typography.labelMedium
                     )
                 }
             }
@@ -30,18 +84,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    CoursesTheme {
-        Greeting("Android")
-    }
+private fun TopicCardPreview() {
+    TopicCard(
+        Topic(
+            R.string.architecture,
+            58,
+            R.drawable.architecture)
+    )
 }
