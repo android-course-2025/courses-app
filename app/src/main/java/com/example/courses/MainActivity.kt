@@ -5,15 +5,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.courses.data.DataSource
 import com.example.courses.model.Topic
 import com.example.courses.ui.theme.CoursesTheme
 
@@ -32,7 +40,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CoursesTheme {
-
+                CourseApp()
             }
         }
     }
@@ -47,7 +55,8 @@ fun TopicCard(topic: Topic, modifier: Modifier = Modifier){
                 contentDescription = stringResource(topic.nameResourceId),
                 modifier = Modifier
                     .height(68.dp)
-                    .width(68.dp),
+                    .width(68.dp)
+                    .aspectRatio(1f),
                 contentScale = ContentScale.Fit
             )
             Column(
@@ -75,7 +84,7 @@ fun TopicCard(topic: Topic, modifier: Modifier = Modifier){
                     )
                     Text(
                         text = "${topic.numberAssociatedCourse}",
-                        modifier = Modifier.padding(start = 8.dp),
+                        modifier = Modifier.padding( start = 8.dp),
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -84,14 +93,37 @@ fun TopicCard(topic: Topic, modifier: Modifier = Modifier){
     }
 }
 
+@Composable
+fun CourseGrid(topicList: List<Topic>, modifier: Modifier = Modifier){
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.padding(8.dp),
+    ) {
+        items(topicList.size) { index ->
+            TopicCard(topicList[index])
+        }
+    }
+}
+
+@Composable
+fun CourseApp() {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+        ,
+        color = MaterialTheme.colorScheme.background
+    ) {
+        CourseGrid(
+            topicList = DataSource.topics,
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
-private fun TopicCardPreview() {
-    TopicCard(
-        Topic(
-            R.string.architecture,
-            58,
-            R.drawable.architecture)
-    )
+private fun CourseGridReview() {
+    CourseGrid(DataSource.topics)
 }
